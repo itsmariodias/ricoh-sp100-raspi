@@ -6,4 +6,4 @@ echo -n "Ghostscript  [REQUIRED] : "; [ -x "$(which gs)" ]                  && e
 echo -n "ps2write     [REQUIRED] : "; [ -n "$(gs --help | grep ps2write)" ] && echo "Yes" || echo "No"
 echo -n "pbmraw       [REQUIRED] : "; [ -n "$(gs --help | grep pbmraw)" ]   && echo "Yes" || echo "No"
 echo -n "inotify-wait [optional] : "; [ -x "$(which inotifywait)" ]         && echo "Yes, version: $(inotifywait --help | head -1)" || echo "No"
-
+echo -n "uuidgen      [REQUIRED] : "; [ -x "$(which uuidgen)" ]             && echo "Yes" || echo "No"
