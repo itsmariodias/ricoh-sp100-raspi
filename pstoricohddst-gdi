@@ -8,7 +8,7 @@ function log() {
 }
 
 function logpipe() {
-    [ "${DEBUG}" = "yes" ] && echo "[$(date)] $@" >> /home/debug.log
+    [ "${DEBUG}" = "yes" ] && echo "[$(date)] $@" >> /home/xdebug.log
 }
 
 function trapINT() {
@@ -74,7 +74,7 @@ mkdir -p $uid
 	    [ "$stage" = "empty" ] && {
 		log "1st stage. Flushing PJL header"
 		cat <<EOF
--12345X@PJL$e
+%-12345X@PJL$e
 @PJL SET TIMESTAMP=$ddate$e
 @PJL SET FILENAME=Document$e
 @PJL SET COMPRESS=JBIG$e
@@ -89,7 +89,7 @@ EOF
 		log "Last stage. Flushing PJL footer"
 		cat <<EOF
 @PJL EOJ$e
--12345X
+%-12345X
 EOF
 		pid=`ps ax | grep $uid | grep -v grep | awk ' { print $1 } '`
 		[ ! "x$pid" = "x" ] && kill $pid
@@ -147,7 +147,7 @@ EOF
 	log "Conversion complete"
 
 	cat <<EOF
--12345X@PJL$e
+%-12345X@PJL$e
 @PJL SET TIMESTAMP=$ddate$e
 @PJL SET FILENAME=Document$e
 @PJL SET COMPRESS=JBIG$e
@@ -196,7 +196,7 @@ EOF
 	# Flushing PJL footer
 	cat <<EOF
 @PJL EOJ$e
--12345X
+%-12345X
 EOF
 
 }
