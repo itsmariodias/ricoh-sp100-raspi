@@ -25,7 +25,7 @@
 *cupsVersion: 1.6
 *cupsModelNumber: 0
 *cupsManualCopies: False
-*cupsFilter: "application/vnd.cups-postscript 100 pstoricohddst-gdi"
+*cupsFilter: "application/vnd.cups-postscript 0 pstoricohddst-gdi"
 *cupsLanguages: "en"
 *OpenUI *PageSize/Media Size: PickOne
 *OrderDependency: 10 AnySetup *PageSize
