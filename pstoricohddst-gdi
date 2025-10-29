@@ -97,7 +97,13 @@ EOF
 	    }
 	    [ "$stage" = "printing" ] && {
 		# Converting page to JBIG format (parameters are very special for this printer!)
-		pbmtojbg -p 72 -o 3 -m 0 -q < $uid/$page > $uid/raster.jbig
+		# --- Enhance contrast before JBIG conversion ---
+		if command -v convert >/dev/null 2>&1; then
+			convert "$uid/$page" -contrast-stretch 10%x10% "$uid/$page"
+		elif command -v pnmnorm >/dev/null 2>&1; then
+			pnmnorm "$uid/$page" > "$uid/tmp.pbm" && mv "$uid/tmp.pbm" "$uid/$page"
+		fi
+		pbmtojbg -p 72 -o 3 -m 0 -q < "$uid/$page" > "$uid/raster.jbig"
 
 		# Taking image size
 		jsize=`wc -c < $uid/raster.jbig`
@@ -159,8 +165,15 @@ EOF
 	for page in ${uid}/*-page.pbm; do
 
 		log "Page $page"
+		# --- Enhance contrast before JBIG conversion ---
+		if command -v convert >/dev/null 2>&1; then
+			convert "$page" -contrast-stretch 10%x10% "$page"
+		elif command -v pnmnorm >/dev/null 2>&1; then
+			pnmnorm "$page" > "$uid/tmp.pbm" && mv "$uid/tmp.pbm" "$page"
+		fi
+		
 		# Converting page to JBIG format (parameters are very special for this printer!)
-		pbmtojbg -p 72 -o 3 -m 0 -q < $page > $uid/raster.jbig
+		pbmtojbg -p 72 -o 3 -m 0 -q < "$page" > "$uid/raster.jbig"
 
 		# Taking image size
 		jsize=`wc -c < $uid/raster.jbig`
