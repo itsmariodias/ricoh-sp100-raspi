@@ -103,7 +103,7 @@ EOF
 		elif command -v pnmnorm >/dev/null 2>&1; then
 			pnmnorm "$uid/$page" > "$uid/tmp.pbm" && mv "$uid/tmp.pbm" "$uid/$page"
 		fi
-		pbmtojbg -p 72 -o 3 -m 0 -q < "$uid/$page" > "$uid/raster.jbig"
+		pbmtojbg -p 72 -o 3 -m 0 -q < $uid/$page > $uid/raster.jbig
 
 		# Taking image size
 		jsize=`wc -c < $uid/raster.jbig`
@@ -172,7 +172,7 @@ EOF
 		elif command -v pnmnorm >/dev/null 2>&1; then
 			pnmnorm "$page" > "$uid/tmp.pbm" && mv "$uid/tmp.pbm" "$page"
 		fi
-		pbmtojbg -p 72 -o 3 -m 0 -q < "$page" > "$uid/raster.jbig"
+		pbmtojbg -p 72 -o 3 -m 0 -q < $page > $uid/raster.jbig
 
 		# Taking image size
 		jsize=`wc -c < $uid/raster.jbig`
