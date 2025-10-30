@@ -20,7 +20,7 @@ function trapINT() {
 
 function stop() {
     log "Stop stop page";
-    echo "stop" > $uid/999999999-page.pbm
+    echo "stop" > $uid/999999999-page.pgm
 }
 
 log "Called with cmdline: $0 $*"
@@ -69,7 +69,7 @@ mkdir -p $uid
 
 	(
 	stage="empty"
-	inotifywait -q -m -r -e close_write --format '%f' $uid | grep --line-buffered 'page.pbm$' | while read page; do
+	inotifywait -q -m -r -e close_write --format '%f' $uid | grep --line-buffered 'page.pgm$' | while read page; do
 	    log "Page submitted"
 	    [ "$stage" = "empty" ] && {
 		log "1st stage. Flushing PJL header"
@@ -85,7 +85,7 @@ EOF
 
 		stage="printing"
 	    }
-	    [ "$page" = "999999999-page.pbm" ] && { 
+	    [ "$page" = "999999999-page.pgm" ] && { 
 		log "Last stage. Flushing PJL footer"
 		cat <<EOF
 @PJL EOJ$e
@@ -97,7 +97,7 @@ EOF
 	    }
 	    [ "$stage" = "printing" ] && {
 		# Converting page to JBIG format (parameters are very special for this printer!)
-		pbmtojbg -p 72 -o 3 -m 0 -q < $uid/$page > $uid/raster.jbig
+		pgmtopbm -fs "$uid/$page" | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
 
 		# Taking image size
 		jsize=`wc -c < $uid/raster.jbig`
@@ -131,8 +131,8 @@ EOF
 	done
 	) &
 
-	# Converting from PostScript to PostScript-monochrome, then to PBM image format (per page)
-	gs -dSAFER -sDEVICE=ps2write -sOutputFile=- -r$resolution -dQUIET -dBATCH -dNOPAUSE - | gs -dSAFER -sDEVICE=pbmraw -sOutputFile=${uid}/%03d-page.pbm -r$resolution -dQUIET -dBATCH -dNOPAUSE -
+	# Converting from PostScript to PostScript-monochrome, then to PGM image format (per page)
+	gs -dSAFER -sDEVICE=ps2write -sOutputFile=- -r$resolution -dQUIET -dBATCH -dNOPAUSE - | gs -dSAFER -sDEVICE=pgmraw -sOutputFile=${uid}/%03d-page.pgm -r$resolution -dQUIET -dBATCH -dNOPAUSE -
 
 	stop
 	wait
@@ -141,9 +141,9 @@ EOF
 } || {
 	log "Synchronous variant"
 
-	# Converting from PostScript to PostScript-monochrome, then to PBM image format (per page)
+	# Converting from PostScript to PostScript-monochrome, then to PGM image format (per page)
 	log "Converting document to pages"
-	gs -dSAFER -sDEVICE=ps2write -sOutputFile=- -r$resolution -dQUIET -dBATCH -dNOPAUSE - | gs -dSAFER -sDEVICE=pbmraw -sOutputFile=${uid}/%03d-page.pbm -r$resolution -dQUIET -dBATCH -dNOPAUSE -
+	gs -dSAFER -sDEVICE=ps2write -sOutputFile=- -r$resolution -dQUIET -dBATCH -dNOPAUSE - | gs -dSAFER -sDEVICE=pgmraw -sOutputFile=${uid}/%03d-page.pgm -r$resolution -dQUIET -dBATCH -dNOPAUSE -
 	log "Conversion complete"
 
 	cat <<EOF
@@ -156,11 +156,11 @@ EOF
 @PJL SET HOLD=OFF$e
 EOF
 
-	for page in ${uid}/*-page.pbm; do
+	for page in ${uid}/*-page.pgm; do
 
 		log "Page $page"
 		# Converting page to JBIG format (parameters are very special for this printer!)
-		pbmtojbg -p 72 -o 3 -m 0 -q < $page > $uid/raster.jbig
+		pgmtopbm -fs "$uid/$page" | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
 
 		# Taking image size
 		jsize=`wc -c < $uid/raster.jbig`
