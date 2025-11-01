@@ -98,7 +98,8 @@ EOF
 	    [ "$stage" = "printing" ] && {
 		# Converting page to JBIG format (parameters are very special for this printer!)
 		# pgmtopbm -fs "$uid/$page" | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
-		convert "$uid/$page" -gamma 0.6 -density $resolution - | pgmtopbm -fs | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
+		# convert "$uid/$page" -gamma 0.6 -density $resolution - | pgmtopbm -fs | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
+		pnmgamma 0.6 "$uid/$page" | pgmtopbm -fs | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
 
 		# Taking image size
 		jsize=`wc -c < $uid/raster.jbig`
@@ -162,7 +163,8 @@ EOF
 		log "Page $page"
 		# Converting page to JBIG format (parameters are very special for this printer!)
 		# pgmtopbm -fs "$uid/$page" | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
-		convert "$uid/$page" -gamma 0.6 -density $resolution - | pgmtopbm -fs | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
+		# convert "$uid/$page" -gamma 0.6 -density $resolution - | pgmtopbm -fs | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
+		pnmgamma 0.6 "$uid/$page" | pgmtopbm -fs | pbmtojbg -p 72 -o 3 -m 0 -q > "$uid/raster.jbig"
 
 		# Taking image size
 		jsize=`wc -c < $uid/raster.jbig`
